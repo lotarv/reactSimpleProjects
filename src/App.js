@@ -6,9 +6,39 @@ import { Users } from './components/Users';
 // Тут список пользователей: https://reqres.in/api/users
 
 function App() {
+
+  const [users, setUsers] = React.useState([]);
+  const [isLoading, setLoading] = React.useState(true);
+  const [invites, setInvites] = React.useState([]);
+
+  const [searchValue, setSearchValue] = React.useState("");
+
+
+  React.useEffect(() => {
+    fetch("https://reqres.in/api/users")
+      .then(res => res.json())
+      .then(json => setUsers(json.data))
+      .catch(err => {
+        console.error(err);
+        alert('Ошибка при получении пользователей')
+      })
+      .finally(() => setLoading(false));
+  }, [])
+  console.log(users);
+
+  function onChangeSearchValue(event) {
+    setSearchValue(event.target.value)
+  }
+
+
   return (
     <div className="App">
-      <Users />
+      <Users
+          onChangeSearchValue = {onChangeSearchValue}
+          searchValue = {searchValue}
+          items = {users} 
+          isLoading = {isLoading}
+        />
       {/* <Success /> */}
     </div>
   );
